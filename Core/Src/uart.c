@@ -43,7 +43,7 @@ void UART_Transmit(UART_HandlerTypeDef_t* huart, char data){
 
 
 uint8_t UART_Receive(UART_HandlerTypeDef_t* huart){
-	if (!(huart->instance->SR & USART_SR_RXNE)) return 0;
+	while(!(huart->instance->SR & USART_SR_RXNE)){}
 	return huart->instance->DR;
 }
 
