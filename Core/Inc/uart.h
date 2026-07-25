@@ -30,7 +30,9 @@ typedef struct{
 	UART_WordLength_t wordLength;
 	UART_StopBits_t stopBits;
 	UART_FunctionalState_t dmaTxEnable;
+	UART_FunctionalState_t intTxEnable;
 	UART_FunctionalState_t dmaRxEnable;
+	UART_FunctionalState_t intRxEnable;
 	UART_FunctionalState_t recieveEnable;
 	UART_FunctionalState_t transmitEnable;
 	UART_BaudRate_t baudRate;
@@ -47,5 +49,6 @@ void UART_Set_BaudRate(UART_HandlerTypeDef_t* huart);
 void UART_Init(UART_HandlerTypeDef_t* huart);
 void UART_Transmit(UART_HandlerTypeDef_t* huart, char data);
 uint8_t UART_Receive(UART_HandlerTypeDef_t* huart);
-
+void UART_Transmit_IT(UART_HandlerTypeDef_t* huart, char data);
+uint8_t UART_Receive_IT(UART_HandlerTypeDef_t* huart);
 #endif /* INC_UART_H_ */
