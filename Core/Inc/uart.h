@@ -3,6 +3,7 @@
 #define INC_UART_H_
 #include "stm32f446xx.h"
 #include <stdint.h>
+#include <string.h>
 #define UART_Default_Value			0U
 
 
@@ -51,4 +52,5 @@ void UART_Transmit(UART_HandlerTypeDef_t* huart, char data);
 uint8_t UART_Receive(UART_HandlerTypeDef_t* huart);
 void UART_Transmit_IT(UART_HandlerTypeDef_t* huart, char data);
 uint8_t UART_Receive_IT(UART_HandlerTypeDef_t* huart);
+void UART_Transmit_String(UART_HandlerTypeDef_t* huart, char* str);
 #endif /* INC_UART_H_ */

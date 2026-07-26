@@ -4,8 +4,8 @@
 #include "adc.h"
 #include "uart.h"
 
-uint8_t txflag = 0;
-uint8_t rxflag = 0;
+volatile uint8_t txflag = 0;
+volatile uint8_t rxflag = 0;
 volatile char rx_data = 0;
 UART_HandlerTypeDef_t huart1 = {0};
 
@@ -40,15 +40,18 @@ int main(void){
     huart1.config.stopBits = UART_1_STOP_BIT;
     huart1.config.transmitEnable = UART_ENABLE;
     huart1.config.recieveEnable = UART_ENABLE;
-    huart1.config.intRxEnable = UART_ENABLE;
-    huart1.config.intTxEnable = UART_ENABLE;
+    huart1.config.intRxEnable = UART_DISABLE;
+    huart1.config.intTxEnable = UART_DISABLE;
     UART_Init(&huart1);
 
-    NVIC_EnableIRQ(USART2_IRQn);
+    UART_Transmit_String(&huart1, "Hello World!\r\n");
+
+/*    NVIC_EnableIRQ(USART2_IRQn);
     __enable_irq();
+*/
 
     while (1){
-        if(txflag){
+/*        if(txflag){
           //  UART_Transmit_IT(&huart1, 'l');
             txflag = 0;
         }
@@ -58,12 +61,11 @@ int main(void){
             rxflag = 0;
             UART_Transmit_IT(&huart1, temp);
             //(void)temp;	//to remove not used calls
-        }
+     } */
     }
 }
 
-void USART2_IRQHandler(void){
-
+/* void USART2_IRQHandler(void){
     if((huart1.instance->SR & USART_SR_TXE) && (huart1.instance->CR1 & USART_CR1_TXEIE)){
         txflag = 1;
         huart1.instance->CR1 &= ~USART_CR1_TXEIE;
@@ -72,5 +74,6 @@ void USART2_IRQHandler(void){
     if((huart1.instance->SR & USART_SR_RXNE) && (huart1.instance->CR1 & USART_CR1_RXNEIE)){
         rx_data = UART_Receive_IT(&huart1);
         rxflag = 1;
-    }
-}
+    	}
+	}
+*/

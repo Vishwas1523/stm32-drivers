@@ -48,3 +48,12 @@ void UART_Transmit_IT(UART_HandlerTypeDef_t* huart, char data){
 uint8_t UART_Receive_IT(UART_HandlerTypeDef_t* huart){
     return (uint8_t)(huart->instance->DR & 0xFF);
 }
+
+void UART_Transmit_String(UART_HandlerTypeDef_t* huart, char* str){
+	for(int i = 0; i < strlen(str); i++){
+		UART_Transmit(huart, str[i]);
+	}
+}
+
+
+
