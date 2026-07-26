@@ -49,14 +49,15 @@ int main(void){
 
     while (1){
         if(txflag){
-            UART_Transmit_IT(&huart1, 'l');
+          //  UART_Transmit_IT(&huart1, 'l');
             txflag = 0;
         }
         if(rxflag){
 
             char temp = rx_data;
             rxflag = 0;
-            (void)temp;
+            UART_Transmit_IT(&huart1, temp);
+            //(void)temp;	//to remove not used calls
         }
     }
 }
@@ -65,11 +66,11 @@ void USART2_IRQHandler(void){
 
     if((huart1.instance->SR & USART_SR_TXE) && (huart1.instance->CR1 & USART_CR1_TXEIE)){
         txflag = 1;
-        huart1.instance->CR1 &= ~USART_CR1_TXEIE; // Disable TXIE to prevent infinite loop
+        huart1.instance->CR1 &= ~USART_CR1_TXEIE;
     }
 
     if((huart1.instance->SR & USART_SR_RXNE) && (huart1.instance->CR1 & USART_CR1_RXNEIE)){
-        rx_data = UART_Receive_IT(&huart1); // Reading DR clears RXNE flag
+        rx_data = UART_Receive_IT(&huart1);
         rxflag = 1;
     }
 }

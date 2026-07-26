@@ -25,6 +25,7 @@ void UART_Init(UART_HandlerTypeDef_t* huart){
     huart->instance->CR1 &= ~(USART_CR1_RXNEIE);
     huart->instance->CR1 |= (huart->config.intRxEnable << USART_CR1_RXNEIE_Pos);
     huart->instance->CR1 &= ~(USART_CR1_TXEIE);
+    huart->instance->CR1 |= (huart->config.intTxEnable << USART_CR1_TXEIE_Pos);
     huart->instance->CR1 |= USART_CR1_UE;
 }
 
