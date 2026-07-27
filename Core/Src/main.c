@@ -10,41 +10,62 @@ volatile char rx_data = 0;
 UART_HandlerTypeDef_t huart1 = {0};
 
 int main(void){
+	RCC->AHB1ENR |= RCC_AHB1ENR_CRCEN; //enabling clock for CRC
+	uart_init();	//intializing uart for transfering data with multiple arguments
+	CRC->CR |= CRC_CR_RESET;	//setting up the reset bit which make the value of DR 0xFFFFFFFF
+	CRC->DR = 0x1234567;
+	//this value will be modified with a mathematical equation with a CRC-32 standar polynomial
+	// the polynomial is 0x04C11DB7
+	uint32_t crc1 = CRC->DR;
+	CRC->DR = 0x7654321;
+	uint32_t crc2 = CRC->DR;
+	UART_printf("value of crcs are: %u %u\r\n", crc1, crc2);
+//----------------------------------------------------------------------
+	CRC->CR |= CRC_CR_RESET;
+	CRC->DR = 0x1234567;
+	crc1 = CRC->DR;
+	UART_printf("value of crcs are: %u\r\n", crc1);
+//----------------------------------------------------------------------
+	CRC->CR |= CRC_CR_RESET;
+	CRC->DR = 0x7654321;
+	crc2 = CRC->DR;
+	UART_printf("value of crcs are: %u\r\n", crc2);
+//------------------------------------------------------------------
 
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-    RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+//    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+//    RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+//
+//    GPIO_Type MyGPIO;
+//    MyGPIO.GPIO = GPIOA;
+//    MyGPIO.Mode = AF_MODE;
+//    MyGPIO.Output_Speed = FAST_SPEED;
+//    MyGPIO.Output_Type = PUSH_PULL;
+//    MyGPIO.PullUp_PullDown = NO_PULLUP_PULLDOWN;
+//    MyGPIO.pin_number = 2;
+//    MyGPIO.alternate_function  = 7;
+//    GPIO_Init(MyGPIO);
+//
+//    GPIO_Type MyGPIO2;
+//    MyGPIO2.GPIO = GPIOA;
+//    MyGPIO2.Mode = AF_MODE;
+//    MyGPIO2.Output_Speed = FAST_SPEED;
+//    MyGPIO2.Output_Type = PUSH_PULL;
+//    MyGPIO2.PullUp_PullDown = NO_PULLUP_PULLDOWN;
+//    MyGPIO2.pin_number = 3;
+//    MyGPIO2.alternate_function  = 7;
+//    GPIO_Init(MyGPIO2);
+//
+//    huart1.instance = USART2;
+//    huart1.config.baudRate = UART_BAUD_9600;
+//    huart1.config.wordLength = UART_8_BIT_DATA;
+//    huart1.config.stopBits = UART_1_STOP_BIT;
+//    huart1.config.transmitEnable = UART_ENABLE;
+//    huart1.config.recieveEnable = UART_ENABLE;
+//    huart1.config.intRxEnable = UART_DISABLE;
+//    huart1.config.intTxEnable = UART_DISABLE;
+//    UART_Init(&huart1);
 
-    GPIO_Type MyGPIO;
-    MyGPIO.GPIO = GPIOA;
-    MyGPIO.Mode = AF_MODE;
-    MyGPIO.Output_Speed = FAST_SPEED;
-    MyGPIO.Output_Type = PUSH_PULL;
-    MyGPIO.PullUp_PullDown = NO_PULLUP_PULLDOWN;
-    MyGPIO.pin_number = 2;
-    MyGPIO.alternate_function  = 7;
-    GPIO_Init(MyGPIO);
-
-    GPIO_Type MyGPIO2;
-    MyGPIO2.GPIO = GPIOA;
-    MyGPIO2.Mode = AF_MODE;
-    MyGPIO2.Output_Speed = FAST_SPEED;
-    MyGPIO2.Output_Type = PUSH_PULL;
-    MyGPIO2.PullUp_PullDown = NO_PULLUP_PULLDOWN;
-    MyGPIO2.pin_number = 3;
-    MyGPIO2.alternate_function  = 7;
-    GPIO_Init(MyGPIO2);
-
-    huart1.instance = USART2;
-    huart1.config.baudRate = UART_BAUD_9600;
-    huart1.config.wordLength = UART_8_BIT_DATA;
-    huart1.config.stopBits = UART_1_STOP_BIT;
-    huart1.config.transmitEnable = UART_ENABLE;
-    huart1.config.recieveEnable = UART_ENABLE;
-    huart1.config.intRxEnable = UART_DISABLE;
-    huart1.config.intTxEnable = UART_DISABLE;
-    UART_Init(&huart1);
-
-    UART_Transmit_String(&huart1, "Hello World!\r\n");
+//    UART_Transmit_String(&huart1, "Hello World!\r\n");
 
 /*    NVIC_EnableIRQ(USART2_IRQn);
     __enable_irq();
