@@ -1,9 +1,4 @@
-/*
- * HAL_DMA.c
- *
- *  Created on: Jul 29, 2026
- *      Author: VICTUS
- */
+
 #include "HAL_DMA.h"
 
 
@@ -12,15 +7,41 @@ inline void DMA_DeInit(DMA_HandlerTypeDef* hdma){
 }
 
 void DMA_Init(DMA_HandlerTypeDef* hdma){
-	DMA_DeInit(hdma);
 	hdma->instance->CR |= hdma->config.channel		<< 	DMA_CR_CHSEL_Pos;
 	hdma->instance->CR |= hdma->config.priority		<<	DMA_CR_PL_Pos;
+	if(hdma->controller == DMA_1 && hdma->config.direction == DMA_DIRECTION_MEM_TO_MEM)
+		return;	//Only DMA2 controller can do Memory to Memory Transfers
 	hdma->instance->CR |= hdma->config.direction	<< 	DMA_CR_DIR_Pos;
 	hdma->instance->CR |= hdma->config.peripheralIncrementMode	<< DMA_CR_PINC_Pos;
 	hdma->instance->CR |= hdma->config.memoryIncrementMode    <<  DMA_CR_MINC_Pos;
-	hdma->instance->CR |= hdma->config.circularMode	<< DMA_CR_CIRC_Pos;
+	if(hdma->config.direction != DMA_DIRECTION_MEM_TO_MEM){		//There is no direct or circular mode in Memory to Memory Transfers
+		hdma->instance->CR |= hdma->config.circularMode	<< DMA_CR_CIRC_Pos;
+		hdma->instance->FCR	|= DMA_FCR_DMDIS_DIS;
+	}
+	hdma->instance->CR |= hdma->config.fifoMode		<<  DMA_FCR_FTH_Pos; //FIFO is must in Memory to Memory Transfers
 	hdma->instance->CR |= hdma->config.PSIZE << DMA_CR_PSIZE_Pos;
 	hdma->instance->CR |= hdma->config.MSIZE << DMA_CR_MSIZE_Pos;
+	hdma->instance->CR |=	hdma->config.peripheralIncrementMode<<DMA_CR_PINC_Pos;
+	hdma->instance->CR |=   hdma->config.memoryIncrementMode<<DMA_CR_MINC_Pos;
+	hdma->instance->CR |= 	DMA_CR_EN;
 }
 
+void DMA_Start(DMA_HandlerTypeDef* hdma, uint32_t srcAddress, uint32_t dstAddress, uint16_t numOfTransfers){
+		DMA_DeInit(hdma);
+		for(int i = 0; i < 100000; i++){} 	//After disabling DMA we need some time before configuring
+		switch (hdma->config.direction){
+			case DMA_DIRECTION_MEM_TO_MEM:
+				hdma->instance->PAR = srcAddress;
+				hdma->instance->M0AR = dstAddress;
+				hdma->instance->NDTR = numOfTransfers;
+				DMA_Init(hdma);
+				break;
+
+			case DMA_DIRECTION_MEM_TO_PER:
+				break;
+
+			case DMA_DIRECTION_PER_TO_MEM:
+				break;
+		}
+}
 

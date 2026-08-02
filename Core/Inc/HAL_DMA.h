@@ -4,6 +4,13 @@
 
 #include <stdint.h>
 
+typedef struct{
+	volatile uint32_t LISR;
+	volatile uint32_t HISR;
+	volatile uint32_t LIFCR;
+	volatile uint32_t HIFCR;
+}DMA_Typedef;
+
 
 typedef struct{
 	volatile uint32_t CR;
@@ -12,7 +19,7 @@ typedef struct{
 	volatile uint32_t M0AR;
 	volatile uint32_t M1AR;
 	volatile uint32_t FCR;
-}DMA_Stream_TypeDef;
+}DMA_Stream_Typedef;
 
 typedef enum{
 	DMA_DISABLE = 0,
@@ -50,11 +57,20 @@ typedef enum{
 	DMA_CHANNEL7 = 7,
 }DMA_Channel_t;
 
+
+typedef enum{
+	DMA_FIFO_1_BY_4	= 0,
+	DMA_FIFO_1_BY_2 = 1,
+	DMA_FIFO_3_BY_4	= 2,
+	DMA_FIFO_FULL	= 3
+}DMA_FIFO_Mode_t;
+
 typedef struct{
 	DMA_Direction_t direction;
 	DMA_FunctionalState_t circularMode;
 	DMA_FunctionalState_t peripheralIncrementMode;
 	DMA_FunctionalState_t memoryIncrementMode;
+	DMA_FIFO_Mode_t fifoMode;
 	DMA_Size_t PSIZE;
 	DMA_Size_t MSIZE;
 	DMA_Priority_t priority;
@@ -62,29 +78,30 @@ typedef struct{
 }DMA_Stream_Config_t;
 
 typedef struct{
-	DMA_Stream_TypeDef* instance;
+	DMA_Typedef* controller;
+	DMA_Stream_Typedef* instance;
 	DMA_Stream_Config_t config;
 }DMA_HandlerTypeDef;
 
 //------------------------DMA1 Streams and their addresses---------------------
-#define DMA1_Stream0				(DMA_Stream_TypeDef*)0x40026010
-#define DMA1_Stream1				(DMA_Stream_TypeDef*)0x40026028
-#define DMA1_Stream2				(DMA_Stream_TypeDef*)0x40026040
-#define DMA1_Stream3				(DMA_Stream_TypeDef*)0x40026058
-#define DMA1_Stream4				(DMA_Stream_TypeDef*)0x40026070
-#define DMA1_Stream5				(DMA_Stream_TypeDef*)0x40026088
-#define DMA1_Stream6				(DMA_Stream_TypeDef*)0x400260A0
-#define DMA1_Stream7				(DMA_Stream_TypeDef*)0x400260B8
+#define DMA1_Stream_0				(DMA_Stream_Typedef*)0x40026010
+#define DMA1_Stream_1				(DMA_Stream_Typedef*)0x40026028
+#define DMA1_Stream_2				(DMA_Stream_Typedef*)0x40026040
+#define DMA1_Stream_3				(DMA_Stream_Typedef*)0x40026058
+#define DMA1_Stream_4				(DMA_Stream_Typedef*)0x40026070
+#define DMA1_Stream_5				(DMA_Stream_Typedef*)0x40026088
+#define DMA1_Stream_6				(DMA_Stream_Typedef*)0x400260A0
+#define DMA1_Stream_7				(DMA_Stream_Typedef*)0x400260B8
 
 //------------------------DMA2 Streams and their addresses---------------------
-#define DMA2_Stream0				(DMA_Stream_TypeDef*)0x40026410
-#define DMA2_Stream1				(DMA_Stream_TypeDef*)0x40026428
-#define DMA2_Stream2				(DMA_Stream_TypeDef*)0x40026440
-#define DMA2_Stream3				(DMA_Stream_TypeDef*)0x40026458
-#define DMA2_Stream4				(DMA_Stream_TypeDef*)0x40026470
-#define DMA2_Stream5				(DMA_Stream_TypeDef*)0x40026488
-#define DMA2_Stream6				(DMA_Stream_TypeDef*)0x400264A0
-#define DMA2_Stream7				(DMA_Stream_TypeDef*)0x400264B8
+#define DMA2_Stream_0				(DMA_Stream_Typedef*)0x40026410
+#define DMA2_Stream_1				(DMA_Stream_Typedef*)0x40026428
+#define DMA2_Stream_2				(DMA_Stream_Typedef*)0x40026440
+#define DMA2_Stream_3				(DMA_Stream_Typedef*)0x40026458
+#define DMA2_Stream_4				(DMA_Stream_Typedef*)0x40026470
+#define DMA2_Stream_5				(DMA_Stream_Typedef*)0x40026488
+#define DMA2_Stream_6				(DMA_Stream_Typedef*)0x400264A0
+#define DMA2_Stream_7				(DMA_Stream_Typedef*)0x400264B8
 
 //------------------------DMA BIT MANIPULATION & MASKING----------------------
 #define DMA_CR_EN					(1<<0)
@@ -96,15 +113,23 @@ typedef struct{
 #define DMA_CR_CIRC_Pos				 8UL
 #define DMA_CR_PSIZE_Pos			 11UL
 #define DMA_CR_MSIZE_Pos			 13UL
+#define DMA_FCR_DMDIS_DIS			(1<<2)
+#define DMA_FCR_FTH_Pos				 0UL
+#define DMA1_CLOCK_EN				(RCC->AHB1ENR |= (1<<21))
+#define DMA2_CLOCK_EN				(RCC->AHB1ENR |= (1<<22))
+#define DMA_CR_PINC_EN				(1<<9)
+#define DMA_CR_MINC_EN				(1<<10)
+
+//----------------------------DMA CONTROLLER-----------------------------------
+#define DMA_1						(DMA_Typedef*)0x40026000
+#define DMA_2						(DMA_Typedef*)0x40026400
 
 
 
-
-
-
+//-----------------------------------DMA FUNCTIONS----------------------------------
 void DMA_Init(DMA_HandlerTypeDef* hdma);
 void DMA_Start(DMA_HandlerTypeDef* hdma, uint32_t srcAddress, uint32_t dstAddress, uint16_t numOfTransfers);
-
+void DMA_DeInit(DMA_HandlerTypeDef* hdma);
 
 
 
