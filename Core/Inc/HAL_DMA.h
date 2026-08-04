@@ -22,7 +22,7 @@ typedef struct __attribute__((packed)) {
 }DMA_Stream_Typedef;
 
 typedef enum{
-	DMA_DISABLE = 0,
+	DMA_DISABLE = 0,		//For direct mode Disable is Enable & Enable is disable
 	DMA_ENABLE = 1
 }DMA_FunctionalState_t;
 
@@ -70,6 +70,7 @@ typedef struct __attribute__((packed)) {
 	DMA_FunctionalState_t circularMode;
 	DMA_FunctionalState_t peripheralIncrementMode;
 	DMA_FunctionalState_t memoryIncrementMode;
+	DMA_FunctionalState_t directModeDisable;
 	DMA_FIFO_Mode_t fifoMode;
 	DMA_Size_t PSIZE;
 	DMA_Size_t MSIZE;

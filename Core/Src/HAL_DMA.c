@@ -16,10 +16,11 @@ void DMA_Init(DMA_HandlerTypeDef* hdma){
 	hdma->instance->CR |= hdma->config.memoryIncrementMode    <<  DMA_CR_MINC_Pos;
 	if(hdma->config.direction != DMA_DIRECTION_MEM_TO_MEM){		//There is no direct or circular mode in Memory to Memory Transfers
 		hdma->instance->CR |= hdma->config.circularMode	<< DMA_CR_CIRC_Pos;
-		hdma->instance->FCR	&= ~DMA_FCR_DMDIS_DIS;
+		hdma->instance->FCR	|= hdma->config.directModeDisable<<DMA_FCR_FTH_Pos;
+	} else{
+		hdma->instance->CR &= ~(1<< DMA_CR_CIRC_Pos);
+		hdma->instance->FCR	&= ~(1<<DMA_FCR_FTH_Pos);
 	}
-
-
 	hdma->instance->CR |= hdma->config.fifoMode	<<  DMA_FCR_FTH_Pos;
 	hdma->instance->CR |= hdma->config.PSIZE << DMA_CR_PSIZE_Pos;
 	hdma->instance->CR |= hdma->config.MSIZE << DMA_CR_MSIZE_Pos;
