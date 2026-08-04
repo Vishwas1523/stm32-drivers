@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-typedef struct{
+typedef struct __attribute__((packed)) {
 	volatile uint32_t LISR;
 	volatile uint32_t HISR;
 	volatile uint32_t LIFCR;
@@ -12,7 +12,7 @@ typedef struct{
 }DMA_Typedef;
 
 
-typedef struct{
+typedef struct __attribute__((packed)) {
 	volatile uint32_t CR;
 	volatile uint32_t NDTR;
 	volatile uint32_t PAR;
@@ -65,7 +65,7 @@ typedef enum{
 	DMA_FIFO_FULL	= 3
 }DMA_FIFO_Mode_t;
 
-typedef struct{
+typedef struct __attribute__((packed)) {
 	DMA_Direction_t direction;
 	DMA_FunctionalState_t circularMode;
 	DMA_FunctionalState_t peripheralIncrementMode;
@@ -77,7 +77,7 @@ typedef struct{
 	DMA_Channel_t channel;
 }DMA_Stream_Config_t;
 
-typedef struct{
+typedef struct __attribute__((packed)) {
 	DMA_Typedef* controller;
 	DMA_Stream_Typedef* instance;
 	DMA_Stream_Config_t config;

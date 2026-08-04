@@ -16,9 +16,11 @@ void DMA_Init(DMA_HandlerTypeDef* hdma){
 	hdma->instance->CR |= hdma->config.memoryIncrementMode    <<  DMA_CR_MINC_Pos;
 	if(hdma->config.direction != DMA_DIRECTION_MEM_TO_MEM){		//There is no direct or circular mode in Memory to Memory Transfers
 		hdma->instance->CR |= hdma->config.circularMode	<< DMA_CR_CIRC_Pos;
-		hdma->instance->FCR	|= DMA_FCR_DMDIS_DIS;
+		hdma->instance->FCR	&= ~DMA_FCR_DMDIS_DIS;
 	}
-	hdma->instance->CR |= hdma->config.fifoMode		<<  DMA_FCR_FTH_Pos; //FIFO is must in Memory to Memory Transfers
+
+
+	hdma->instance->CR |= hdma->config.fifoMode	<<  DMA_FCR_FTH_Pos;
 	hdma->instance->CR |= hdma->config.PSIZE << DMA_CR_PSIZE_Pos;
 	hdma->instance->CR |= hdma->config.MSIZE << DMA_CR_MSIZE_Pos;
 	hdma->instance->CR |=	hdma->config.peripheralIncrementMode<<DMA_CR_PINC_Pos;
@@ -38,6 +40,10 @@ void DMA_Start(DMA_HandlerTypeDef* hdma, uint32_t srcAddress, uint32_t dstAddres
 				break;
 
 			case DMA_DIRECTION_MEM_TO_PER:
+				hdma->instance->PAR = dstAddress;
+				hdma->instance->M0AR = srcAddress;
+				hdma->instance->NDTR = numOfTransfers;
+				DMA_Init(hdma);
 				break;
 
 			case DMA_DIRECTION_PER_TO_MEM:
