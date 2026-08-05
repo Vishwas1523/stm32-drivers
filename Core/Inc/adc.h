@@ -37,8 +37,8 @@ typedef enum{
 
 
 typedef enum{
-	RIGHT_ALIGNMENT = 0,
-	LEFT_ALIGNMENT
+	ADC_RIGHT_ALIGNMENT = 0,
+	ADC_LEFT_ALIGNMENT
 }ADC_dataAlignment_t;
 
 

@@ -48,6 +48,10 @@ void DMA_Start(DMA_HandlerTypeDef* hdma, uint32_t srcAddress, uint32_t dstAddres
 				break;
 
 			case DMA_DIRECTION_PER_TO_MEM:
+				hdma->instance->PAR = srcAddress;
+				hdma->instance->M0AR = dstAddress;
+				hdma->instance->NDTR = numOfTransfers;
+				DMA_Init(hdma);
 				break;
 		}
 }
