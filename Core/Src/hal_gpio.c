@@ -163,7 +163,7 @@ void GPIO_Interrupt_Enable(uint8_t pin_number, IRQn_Type IRQ_Number){
 }
 
 //***************************************************************************************************************************
-//function the clear the pending bit
+//function to clear the pending bit
 void GPIO_Interrupt_Clear(uint8_t pin_number){
 	EXTI->PR |= (1U<<pin_number);
 }

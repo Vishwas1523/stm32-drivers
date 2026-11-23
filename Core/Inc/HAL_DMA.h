@@ -4,7 +4,8 @@
 
 #include <stdint.h>
 
-typedef struct __attribute__((packed)) {
+
+typedef struct{
 	volatile uint32_t LISR;
 	volatile uint32_t HISR;
 	volatile uint32_t LIFCR;
@@ -12,7 +13,7 @@ typedef struct __attribute__((packed)) {
 }DMA_Typedef;
 
 
-typedef struct __attribute__((packed)) {
+typedef struct{
 	volatile uint32_t CR;
 	volatile uint32_t NDTR;
 	volatile uint32_t PAR;
@@ -122,6 +123,7 @@ typedef struct __attribute__((packed)) {
 #define DMA_CR_MINC_EN				(1<<10)
 
 //----------------------------DMA CONTROLLER-----------------------------------
+
 #define DMA_1						(DMA_Typedef*)0x40026000
 #define DMA_2						(DMA_Typedef*)0x40026400
 
